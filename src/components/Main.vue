@@ -67,7 +67,7 @@
 import firebase from '@/firebase'
 import WoGatari from '@/components/WoGatari.vue'
 import ModalAuth from '@/components/ModalAuth.vue'
-
+window.firebase = firebase
 import Utils from '@/utils'
 
 export default {
@@ -94,7 +94,6 @@ export default {
       this.words = []
       var wordsRef = firebase.database().ref('words/')
       wordsRef.orderByChild("text").startAt(this.wg).on('value', (snapshot) => {
-        console.log(snapshot.val())
         snapshot.forEach(item => {
           this.words.push(item.val())
         })
@@ -103,10 +102,28 @@ export default {
     },
     init(){
       if ( Utils.isValid(this.wg) ){
-        var record = { text: this.wg }
-        firebase.database().ref('words').push(record);
 
-        this.$router.push({ name: 'World', params: { wg: this.wg } })
+        var wordsRef = firebase.database().ref('words/')
+        var monogatariesUserRef = firebase.database().ref(`monogataries`)
+
+        wordsRef.orderByChild("text").equalTo(this.wg).once('value', (snapshot) => {
+
+          console.log(snapshot)
+          if ( !snapshot.val() ){
+            var record = { text: this.wg }
+            let word = wordsRef.push(record);
+
+            monogatariesUserRef.push({ 
+              word: word.key,
+              user: this.user.uid,
+              incidences: 0
+            })
+          }
+
+          this.$router.push({ name: 'World', params: { wg: this.wg } })
+        });
+
+
       }else{
         this.$toast.open({
             message: `Nop, Esto '${this.wg}' No puede ser`,
@@ -115,12 +132,13 @@ export default {
     }
   },
   mounted(){
-
     var user = firebase.auth().currentUser;
-    if ( user ){
-    }else{
-      this.ifShowModalAuth = true
-    }
+    firebase.auth().onAuthStateChanged((user) =>  {
+        if (!user) {
+          this.ifShowModalAuth = true
+        }
+        this.user = user
+    });
   }
 };
 </script>
