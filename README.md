@@ -1,3 +1,6 @@
 # wogatari
+### Compartir Palabras
 
-> Compartir en base a las palabras
+> En Desarrollo
+
+[Ver en Acción](https://wogatari.firebaseapp.com/#/)

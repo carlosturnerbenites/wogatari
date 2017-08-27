@@ -1,7 +1,7 @@
 <template>
-  <div class="container">
+  <div>
 
-    <section class="hero is-medium is-primary">
+    <section class="hero is-primary">
       <div class="hero-body">
         <div class="container has-text-centered">
           <h1 class="title">
@@ -14,7 +14,7 @@
       </div>
     </section>
 
-    <div>
+    <div class="container">
 
       <section class="section">
         <h1 class="title is-1 has-text-centered">
@@ -54,6 +54,11 @@
           <button class="button is-success" @click="init">Comparte</button>
         </div>
       </section>
+
+        <b-modal :canCancel="false" :active.sync="ifShowModalAuth" has-modal-card>
+            <modal-auth v-bind="formProps"></modal-auth>
+        </b-modal>
+
     </div>
   </div>
 </template>
@@ -61,35 +66,45 @@
 <script>
 import firebase from '@/firebase'
 import WoGatari from '@/components/WoGatari.vue'
+import ModalAuth from '@/components/ModalAuth.vue'
+
 import Utils from '@/utils'
 
 export default {
   components:{
-    WoGatari
+    WoGatari,
+    ModalAuth
   },
   data() {
     return {
       wg: '',
       words: [],
       isFetching: false,
+      ifShowModalAuth: false,
+      formProps: {
+          email: 'evan@you.com',
+          password: 'testing'
+      }
     };
   },
   methods:{
     getWords(){
+
       isFetching: true
-      this.words = [{text:"lorem"},{text:"ipsum"},{text:"dolor"}]
-      isFetching: false
+      this.words = []
+      var wordsRef = firebase.database().ref('words/')
+      wordsRef.orderByChild("text").startAt(this.wg).on('value', (snapshot) => {
+        console.log(snapshot.val())
+        snapshot.forEach(item => {
+          this.words.push(item.val())
+        })
+        isFetching: false
+      });
     },
     init(){
-      var wordsRef = firebase.database().ref('words')
       if ( Utils.isValid(this.wg) ){
         var record = { text: this.wg }
         firebase.database().ref('words').push(record);
-
-        wordsRef.equalTo("lorem").on('value', function(snapshot) {
-          window.snapshot = snapshot
-          console.log(snapshot.val())
-        });
 
         this.$router.push({ name: 'World', params: { wg: this.wg } })
       }else{
@@ -97,25 +112,14 @@ export default {
             message: `Nop, Esto '${this.wg}' No puede ser`,
         })
       }
+    }
+  },
+  mounted(){
 
-      /*
-      firebase.auth().signInWithCustomToken(this.wg).catch((error) => {
-        var errorCode = error.code;
-        var errorMessage = error.message;
-      });
-      firebase.auth().onAuthStateChanged((user) =>  {
-        if (user) {
-          var userId = firebase.auth().currentUser.uid;
-
-          // User is signed in.
-          var isAnonymous = user.isAnonymous;
-          var uid = user.uid;
-
-        } else {
-          // User is signed out.
-        }
-      });
-      */
+    var user = firebase.auth().currentUser;
+    if ( user ){
+    }else{
+      this.ifShowModalAuth = true
     }
   }
 };
