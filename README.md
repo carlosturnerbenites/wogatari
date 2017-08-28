@@ -1,4 +1,4 @@
-# wogatari
+# WoGatari
 ### Compartir Palabras
 
 > En Desarrollo

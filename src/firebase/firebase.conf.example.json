@@ -1,5 +1,5 @@
 {
-    "apiKey": "apiKey",
-    "projectId": "projectId",
-    "messagingSenderId": "messagingSenderId"
+	"apiKey": "apiKey",
+	"projectId": "projectId",
+	"messagingSenderId": "messagingSenderId"
 }
