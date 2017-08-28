@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <auth-bar></auth-bar>
     <transition>
       <router-view></router-view>
     </transition>
@@ -7,7 +8,13 @@
 </template>
 
 <script>
-  export default {};
+  import AuthBar from '@/components/AuthBar.vue'
+
+  export default {
+    components:{
+      AuthBar
+    }
+  };
 </script>
 
 <style>
