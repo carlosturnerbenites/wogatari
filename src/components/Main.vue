@@ -52,6 +52,7 @@
 				</div>
 				<div class="has-text-right">
 					<button class="button is-success" @click="init">Comparte</button>
+					<router-link to="World" class="button is-primary" tag="button"> Mundo </router-link>
 				</div>
 			</section>
 		</div>
@@ -59,9 +60,11 @@
 </template>
 
 <script>
-import firebase, { firebaseDatabase } from '@/firebase'
+import firebase, { firebaseDatabase, firebaseAuth } from '@/firebase'
 import WoGatari from '@/components/WoGatari.vue'
 import Utils from '@/utils'
+
+window.firebaseDatabase = firebaseDatabase
 
 export default {
 	components:{
@@ -89,35 +92,34 @@ export default {
 		init(){
 			if ( Utils.isValid(this.wg) ){
 
+				var currentUser = firebaseAuth.currentUser
 				var wordsRef = firebaseDatabase.ref('words')
-				var historyRef = firebaseDatabase.ref(`history`)
+				var wordRef = firebaseDatabase.ref('words').child(this.wg)
 
-				wordsRef.orderByChild("text").equalTo(this.wg).once('value', (snapshot) => {
-					var word = snapshot.val()
-					console.log("Word Exists", word)
-					if ( !word ){
-						var record = { text: this.wg }
-						let newWord = wordsRef.push(record);
-						console.log("New Word", newWord)
+				var historyRef = firebaseDatabase.ref('history')
 
-						/*
-						var refHistoryWord = historyRef.child(`words/${this.wg}`);
-						refHistoryWord.push({
-						  user: this.user.displayName,
-						  uid: this.user.uid,
-						  date: new Date().getTime(),
+				wordRef.once("value",(snap) => {
+					var word = snap.val();
+					if ( word ){
+						var currentIncidences = word.incidences || 0
+						wordRef.update({incidences:currentIncidences + 1 })
+					}else{
+						wordRef.set({
+							text:this.wg,
+							incidences:1,
 						})
-
-						var refHistoryUser = historyRef.child(`users/${this.user.uid}`);
-						refHistoryUser.push({
-						  key: newWord.key,
-									word: this.wg,
-						  date: new Date().getTime(),
-						})
-						*/
 					}
+
+					historyRef.push({
+						uid: currentUser.uid,
+						displayName: currentUser.displayName,
+						word:this.wg,
+						date: new Date().getTime(),
+					})
+
 					this.$router.push({ name: 'World', params: { wg: this.wg } })
-				});
+
+				})
 
 			}else{
 				this.$toast.open({ message: `Nop, Esto '${this.wg}' No puede ser`, })

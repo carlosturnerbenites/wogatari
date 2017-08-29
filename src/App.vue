@@ -1,5 +1,6 @@
 <template>
 	<div id="app">
+
 		<auth-bar></auth-bar>
 
 		<transition name="slide">
@@ -9,6 +10,7 @@
 		<b-modal :canCancel="false" :active.sync="ifShowModalAuth" has-modal-card>
 				<form-auth></form-auth>
 		</b-modal>
+
 	</div>
 </template>
 
@@ -29,11 +31,8 @@
 			FormAuth,
 		},
 		mounted(){
-			var user = firebase.auth().currentUser;
 			firebase.auth().onAuthStateChanged((user) =>  {
-				if (!user) {
-					this.ifShowModalAuth = true
-				}
+				this.ifShowModalAuth = user ? false : true
 				this.user = user
 			});
 		}

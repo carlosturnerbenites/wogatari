@@ -9,16 +9,18 @@ import firebase, { firebaseAuth } from '@/firebase';
 Vue.use(Router);
 
 function requireAuth(to, from, next) {
-	const user = firebaseAuth.currentUser;
-	if (!user) {
-		console.log('User is not logged in');
-		next({
-			path: '/',
-			query: { redirect: to.fullPath },
-		});
-	} else {
-		next();
-	}
+	const currentUser = firebaseAuth.currentUser;
+	firebaseAuth.onAuthStateChanged((user) =>  {
+		if (!user) {
+			console.log('User is not logged in');
+			next({
+				path: '/',
+				query: { redirect: to.fullPath },
+			});
+		} else {
+			next();
+		}
+	})
 }
 
 var router = new Router({

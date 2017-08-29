@@ -48,7 +48,6 @@
 	import firebase, { firebaseAuth } from '@/firebase'
 
 	export default {
-		// props: ['email', 'password', 'user'],
 		data() {
 			return {
 				email: 'carlosturnerbenites@gmail.com',
@@ -61,6 +60,7 @@
 			login(){
 				this.isLoading = true
 				firebaseAuth.signInWithEmailAndPassword(this.email,this.password).catch((error) => {
+					this.isLoading = false
 					var errorCode = error.code;
 					var errorMessage = error.message;
 					this.$toast.open({ message: `Opps, '${errorMessage}'`, })
@@ -74,6 +74,12 @@
 					console.info("Nuevo Usuario Registrado")
 					var currentUser = firebaseAuth.currentUser;
 					currentUser.updateProfile({displayName: this.displayName,}).then(function() {}, function(error) {});
+
+					firebaseDatabase.ref(`users/${currentUser.uid}`).set({
+						uid: currentUser.uid,
+						displayName: this.displayName,
+					});
+
 				}).catch((error) => {
 					this.isLoading = false
 					var errorCode = error.code;

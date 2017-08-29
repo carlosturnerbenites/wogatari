@@ -7,7 +7,7 @@ import 'buefy/lib/buefy.css';
 Vue.config.productionTip = false;
 Vue.use(Buefy,{
 	defaultContainerElement: '#content',
-	defaultToastDuration: 5000,
+	defaultToastDuration: 4000,
 });
 
 /* eslint-disable no-new */
