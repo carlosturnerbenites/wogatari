@@ -1,6 +1,6 @@
 <template>
 <div>
-	<section class="hero is-primary">
+	<section v-if="wg" class="hero is-primary">
 		<div class="hero-body">
 			<div class="container has-text-centered">
 				<h1 class="title">
@@ -23,7 +23,9 @@
 
 import firebase, { firebaseDatabase, firebaseAuth } from '@/firebase';
 import vis from 'vis';
+import chroma from 'chroma-js';
 
+window.chroma = chroma
 export default {
 	data() {
 		return {
@@ -52,16 +54,23 @@ export default {
 			var historyRef = firebaseDatabase.ref('history')
 			var currentUser = firebaseAuth.currentUser
 
+			var scale = chroma.scale(["yellow","orange"])
+			var colorsWords = scale.colors(100)
+
+			var scale = chroma.scale(["red","blue"])
+			var colorsUser = scale.colors(100)
+
 			historyRef.on('child_added', (snapshot) => {
 				var item = snapshot.val()
 				var nodeWord = nodes.get(item.word)
 				var nodeUser = nodes.get(item.uid)
 				if ( !nodeWord ){
 						var size = 25
-						var color = "green"
+						var index = Math.floor((Math.random() * 100) + 1);
+						var color = colorsWords[index]
 						if ( this.wg == item.word ){
 							size = 30
-							color = "blue"
+							color = "green"
 						}
 						nodes.add({
 							id:item.word,
@@ -72,10 +81,10 @@ export default {
 						})
 				}
 				if ( !nodeUser ){
-						var color = "red";
+						var color = colorsUser[index]
 						var fixed = false
 						if ( currentUser.uid == item.uid ) {
-							color = "black";
+							color = "green";
 							fixed = true;
 						}
 					nodes.add({

@@ -1,15 +1,15 @@
 import Vue from 'vue';
 import Router from 'vue-router';
 
+import { firebaseAuth } from '@/firebase';
+
 import Main from '@/components/Main';
 import World from '@/components/World';
 import FormAuth from '@/components/FormAuth';
-import firebase, { firebaseAuth } from '@/firebase';
 
 Vue.use(Router);
 
 function requireAuth(to, from, next) {
-	const currentUser = firebaseAuth.currentUser;
 	firebaseAuth.onAuthStateChanged((user) =>  {
 		if (!user) {
 			console.log('User is not logged in');

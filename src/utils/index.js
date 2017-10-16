@@ -1,10 +1,13 @@
 const Utils = {
 	isValid(word) {
-		let isValid = false;
-		if (typeof word === 'string') {
-			isValid = true;
+		let isValid = true;
+		if (typeof word !== 'string') {
+			isValid = false;
 		}
-		if (word === '') {
+		if (word.length === 0) {
+			isValid = false;
+		}
+		if (word.length > 10) {
 			isValid = false;
 		}
 		return isValid;

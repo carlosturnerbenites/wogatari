@@ -10,9 +10,6 @@
 	import FormAuth from '@/components/FormAuth'
 
 	export default {
-		data() {
-			return {}
-		}
 		components: {
 			FormAuth
 		},

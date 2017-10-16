@@ -15,9 +15,10 @@
 </template>
 
 <script>
+	import firebase from '@/firebase';
+
 	import AuthBar from '@/components/AuthBar.vue'
 	import FormAuth from '@/components/FormAuth.vue'
-	import firebase from '@/firebase';
 
 	export default {
 		data(){

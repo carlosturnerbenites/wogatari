@@ -1,8 +1,6 @@
 <template>
 	<form action="">
-
 		<b-loading :active.sync="isLoading" :canCancel="true"></b-loading>
-
 		<div class="modal-card">
 			<header class="modal-card-head">
 				<p class="modal-card-title">Autenticación</p>
@@ -38,7 +36,9 @@
 			</section>
 			<footer class="modal-card-foot">
 				<button type="button" class="button is-primary" @click="login">Ingresar</button>
-				<button type="button" class="button is-primary" @click="register">Registrarse</button>
+				<!--
+					<button type="button" class="button is-primary" @click="register">Registrarse</button>
+				-->
 			</footer>
 		</div>
 	</form>
@@ -50,9 +50,9 @@
 	export default {
 		data() {
 			return {
-				email: 'carlosturnerbenites@gmail.com',
-				password: '123456',
-				displayName: 'Carlos Turner',
+				email: 'usuario1@gmail.com',
+				password: 'usuario1',
+				displayName: 'usuario 1',
 				isLoading: false,
 			}
 		},
@@ -71,7 +71,6 @@
 				firebaseAuth.createUserWithEmailAndPassword(this.email,this.password)
 				.then((p) => {
 					this.isLoading = false
-					console.info("Nuevo Usuario Registrado")
 					var currentUser = firebaseAuth.currentUser;
 					currentUser.updateProfile({displayName: this.displayName,}).then(function() {}, function(error) {});
 

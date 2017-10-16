@@ -3,8 +3,10 @@ import App from './App';
 import router from './router';
 import Buefy from 'buefy';
 import 'buefy/lib/buefy.css';
+import '@/utils/bulma.js';
 
 Vue.config.productionTip = false;
+
 Vue.use(Buefy,{
 	defaultContainerElement: '#content',
 	defaultToastDuration: 4000,
